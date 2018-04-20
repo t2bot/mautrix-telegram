@@ -19,6 +19,7 @@ import sys
 import logging
 import asyncio
 
+import prometheus_client as prometheus
 import sqlalchemy as sql
 from sqlalchemy import orm
 
@@ -97,6 +98,9 @@ context = Context(appserv, db_session, config, loop, None, None, telethon_sessio
 if config["appservice.public.enabled"]:
     public = PublicBridgeWebsite(loop)
     appserv.app.add_subapp(config.get("appservice.public.prefix", "/public"), public.app)
+
+if config["metrics.enabled"]:
+    prometheus.start_http_server(config["metrics.listen_port"])
 
 with appserv.run(config["appservice.hostname"], config["appservice.port"]) as start:
     init_db(db_session)

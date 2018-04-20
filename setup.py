@@ -7,6 +7,7 @@ extras = {
     "fast_crypto": ["cryptg>=0.1,<0.2"],
     "webp_convert": ["Pillow>=5.0.0,<6"],
     "hq_thumbnails": ["moviepy>=0.2,<0.3"],
+    "metrics": ["prometheus-async>=18.1.0"],
 }
 extras["all"] = [deps[0] for deps in extras.values()]
 

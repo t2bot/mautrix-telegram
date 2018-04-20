@@ -16,6 +16,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import platform
 
+from prometheus_client import Histogram
+from prometheus_async.aio import time
 from telethon.tl.types import *
 from mautrix_appservice import MatrixRequestError
 
@@ -26,6 +28,9 @@ from . import portal as po, puppet as pu, __version__
 config = None
 # Value updated from config in init()
 MAX_DELETIONS = 10
+
+
+UPDATE_TIME = Histogram("telegram_update", "Time spent processing Telegram updates")
 
 
 class AbstractUser:
@@ -124,6 +129,7 @@ class AbstractUser:
 
     # region Telegram update handling
 
+    @time(UPDATE_TIME)
     async def _update(self, update):
         if isinstance(update, (UpdateShortChatMessage, UpdateShortMessage, UpdateNewChannelMessage,
                                UpdateNewMessage, UpdateEditMessage, UpdateEditChannelMessage)):
