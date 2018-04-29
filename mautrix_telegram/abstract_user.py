@@ -15,9 +15,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import platform
+import time
 
-from prometheus_client import Histogram
-from prometheus_async.aio import time
+from prometheus_client import Histogram, Counter
+#from prometheus_async.aio import time
 from telethon.tl.types import *
 from mautrix_appservice import MatrixRequestError
 
@@ -30,8 +31,7 @@ config = None
 MAX_DELETIONS = 10
 
 
-UPDATE_TIME = Histogram("telegram_update", "Time spent processing Telegram updates")
-
+UPDATE_TIME = Histogram("telegram_update", "Time spent processing Telegram updates", ["update_type"])
 
 class AbstractUser:
     session_container = None
@@ -129,8 +129,9 @@ class AbstractUser:
 
     # region Telegram update handling
 
-    @time(UPDATE_TIME)
     async def _update(self, update):
+        upd_type = type(update).__name__
+        start_time = time.time()
         if isinstance(update, (UpdateShortChatMessage, UpdateShortMessage, UpdateNewChannelMessage,
                                UpdateNewMessage, UpdateEditMessage, UpdateEditChannelMessage)):
             await self.update_message(update)
@@ -154,6 +155,8 @@ class AbstractUser:
             await self.update_read_receipt(update)
         else:
             self.log.debug("Unhandled update: %s", update)
+            return
+        UPDATE_TIME.labels(update_type=upd_type).observe(time.time() - start_time)
 
     async def update_pinned_messages(self, update):
         portal = po.Portal.get_by_tgid(update.channel_id)
