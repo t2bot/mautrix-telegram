@@ -49,7 +49,7 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
 
-    install_requires=install_requires,
+    install_requires=install_requires + ['psycopg2', 'uvloop'],
     extras_require=extras_require,
     python_requires="~=3.10",
 
