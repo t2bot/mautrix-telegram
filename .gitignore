@@ -15,3 +15,5 @@ __pycache__
 *.log*
 *.db
 *.bak
+
+.vscode/
