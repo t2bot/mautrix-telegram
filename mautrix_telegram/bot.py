@@ -273,7 +273,7 @@ class Bot(AbstractUser):
         if not portal.allow_bridging:
             return await reply("This bridge doesn't allow bridging this chat.")
 
-        await portal.create_matrix_room(self)
+        # await portal.create_matrix_room(self)
         if portal.mxid:
             if portal.username:
                 return await reply(
