@@ -712,6 +712,7 @@ class AbstractUser(ABC):
                 f"Creating Matrix room for {portal.tgid}"
                 " with data fetched by Telethon due to UpdateChannel"
             )
+            # T2BOT: SUSPECT CREATE ROOM CALL.
             await portal.create_matrix_room(self, chan, invites=[self.mxid])
 
     async def _check_server_notice_edit(self, message: Message) -> None:
