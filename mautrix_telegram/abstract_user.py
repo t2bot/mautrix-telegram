@@ -239,6 +239,7 @@ class AbstractUser(ABC):
             base_logger=base_logger,
             update_error_callback=self._telethon_update_error_callback,
             use_ipv6=self.config["telegram.connection.use_ipv6"],
+            entity_cache_limit=20000, # T2B: Increase from default of ~5000
         )
         self.client.add_event_handler(self._update_catch)
         self._schedule_reconnect()
